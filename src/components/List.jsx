@@ -1,15 +1,15 @@
 import React from 'react';
 import Item from './Item';
 
-function List({ items, deleteItem, editItem }) {
+function List({ evaluaciones, eliminarEvaluacion, editarEvaluacion }) {
   return (
-    <ul>
-      {items.map((item) => (
+    <ul className="evaluation-list">
+      {evaluaciones.map((evaluacion) => (
         <Item
-          key={item.id}
-          item={item}
-          deleteItem={deleteItem}
-          editItem={editItem}
+          key={evaluacion.id}
+          evaluacion={evaluacion}
+          eliminarEvaluacion={eliminarEvaluacion}
+          editarEvaluacion={editarEvaluacion}
         />
       ))}
     </ul>

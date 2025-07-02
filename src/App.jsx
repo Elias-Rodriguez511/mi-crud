@@ -4,47 +4,59 @@ import List from './components/List';
 import './App.css';
 
 function App() {
-  const [items, setItems] = useState([]);
-  const [itemToEdit, setItemToEdit] = useState(null);
+  const [evaluaciones, setEvaluaciones] = useState([]);
+  const [evaluacionAEditar, setEvaluacionAEditar] = useState(null);
 
   useEffect(() => {
-    const storedItems =
-JSON.parse(localStorage.getItem('items')) || [];
-    setItems(storedItems);
+    const evaluacionesGuardadas = JSON.parse(localStorage.getItem('evaluaciones')) || [];
+    setEvaluaciones(evaluacionesGuardadas);
   }, []);
 
   useEffect(() => {
+    localStorage.setItem('evaluaciones', JSON.stringify(evaluaciones));
+  }, [evaluaciones]);
 
-    localStorage.setItem('items', JSON.stringify(items));
-
-  }, [items]);
-
-  const addOrUpdateItem = (value) => {
-    if (itemToEdit) {
-      setItems(items.map(item => item.id ===
-itemToEdit.id ? { ...item, value } : item));
-      setItemToEdit(null);
+  const agregarOActualizarEvaluacion = (evaluacion) => {
+    if (evaluacionAEditar) {
+      setEvaluaciones(
+        evaluaciones.map((e) => (e.id === evaluacionAEditar.id ? { ...evaluacion, id: evaluacionAEditar.id } : e))
+      );
+      setEvaluacionAEditar(null);
     } else {
-      setItems([...items, { id: Date.now(), value }]);
+      setEvaluaciones([...evaluaciones, { ...evaluacion, id: Date.now() }]);
     }
   };
 
-  const deleteItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
+  const eliminarEvaluacion = (id) => {
+    setEvaluaciones(evaluaciones.filter((e) => e.id !== id));
   };
 
-  const editItem = (item) => {
-    setItemToEdit(item);
+  const editarEvaluacion = (evaluacion) => {
+    setEvaluacionAEditar(evaluacion);
   };
 
   return (
     <div className="App">
-      <h1>CRUD con LocalStorage</h1>
-      <Form
-addOrUpdateItem={addOrUpdateItem}
-itemToEdit={itemToEdit} />
-      <List items={items}
-deleteItem={deleteItem} editItem={editItem} />
+      <h1 className="main-title">Evaluación de Alumnos</h1>
+      <div className="form-container">
+        <h2>{evaluacionAEditar ? 'Editar Evaluación' : 'Agregar Nueva Evaluación'}</h2>
+        <Form
+          agregarOActualizarEvaluacion={agregarOActualizarEvaluacion}
+          evaluacionAEditar={evaluacionAEditar}
+        />
+      </div>
+      <div className="list-container">
+        <h2>Evaluaciones Guardadas</h2>
+        {evaluaciones.length === 0 ? (
+          <p>No hay evaluaciones guardadas.</p>
+        ) : (
+          <List
+            evaluaciones={evaluaciones}
+            eliminarEvaluacion={eliminarEvaluacion}
+            editarEvaluacion={editarEvaluacion}
+          />
+        )}
+      </div>
     </div>
   );
 }
